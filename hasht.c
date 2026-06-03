@@ -1,7 +1,7 @@
 #include "hasht.h"
 #define uint unsigned int
 #define min(a, b) ((a) < (b) ? (a) : (b))
-static const ushort lookup = (1 << 12) - 1;
+#define lookup 4095
 static inline int mlen(char * __restrict p) {
     char * __restrict s = p;
     while (*p++);
@@ -14,6 +14,6 @@ ushort hash16(char * __restrict p) {
         k += p[i] - 'a';
     }
     //DIST = 2^12
-    return (((uint)k * until) ^ -1) & lookup;
+    return ((k * until) ^ -1) & lookup;
 }
 
