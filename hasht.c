@@ -10,11 +10,11 @@ static inline int mlen(char * __restrict p) {
 ushort hash16(char * __restrict p) {
     int k = 0;
     char until = min(mlen(p), 16);
+    unsigned char coef = 37;
     for (char i = 0; i < until; i++) {
-        k += p[i] - 'a';
+        k += (p[i] - 'a') * coef++;
     }
-    //DIST = 2^12
-    return ((k * until) ^ -1) & lookup;
+    return ((~((k + until) + coef))) & lookup;
 }
 
 void run(chunk * __restrict c) {
