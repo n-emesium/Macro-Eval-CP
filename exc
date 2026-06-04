@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cc -g memreq.c test.c -o test2 && ./test2
-valgrind -s ./test2
+cc -g hasht.c hashtest.c -o test && ./test
+valgrind -s --leak-check=full ./test

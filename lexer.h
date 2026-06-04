@@ -1,17 +1,26 @@
 #ifndef __LEXER_H__
 #define __LEXER_H__
-#define ushort unsigned short
-#define REG 0
-#define MAC 1
-struct mac;
+#include <stdio.h>
+
+typedef enum {
+    WORD,
+    MACRO,
+    WHITESPACE
+} tt; //token type
+
 typedef struct token {
-    char tt;
-    char *key;
-    struct mac* maci; //macro if
-    struct token* next;
+    tt type;
+    char *content;
+    struct token *next;
 } token;
-typedef struct mac { //metadata
-    ushort hash;
-    char *val;
-} mac;
+
+token* stream(FILE * __restrict fp);
+
+token* test_stream(char * __restrict);
+
+void tfree(token * __restrict t);
+
+void tokprint(token * __restrict t);
+
+
 #endif

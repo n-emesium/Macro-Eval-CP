@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cc -g lexer.c lexertest.c -o lexert && ./lexert
+valgrind -s --leak-check=full ./lexert

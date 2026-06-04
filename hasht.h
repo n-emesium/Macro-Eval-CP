@@ -1,56 +1,39 @@
-#ifndef __HASH__T__
-// #include "memreq.h"
-#define __HASH__T__
-#define SCHUNK 4096
-#define ushort unsigned short
-// #define DIST 4096 //2^12 can fit in ushort
-// #define ushort unsigned short
-
-// typedef struct {
-//     char df : 1; //defined or not
-//     char md : 1; //0 means sub, 1 means exp
-//                  //md stands for mode
-//     char *value; //if its a macro
-// } mtd;
-//
-
-typedef struct elem {
+#ifndef HASHMAP
+#define HASHMAP
+#define BMAX 4096
+#define lookup 4095
+#define SMAX 256
+#define ush unsigned short
+#undef uint
+#define uint unsigned int
+#define dht (*ht)
+typedef struct mem {
+    char f; //occupied or not
     char *key;
-    // mtd meta;
-    // struct {
-    unsigned char df : 1;
-    unsigned char md : 1;
-    char * value;
-    // };
-    struct elem *next; //if there is a collision
-} elem;
+    char *val;
+    struct mem* next;
+} mem;
 
-#define tmd(a) ((a)->meta)
+typedef mem* hasht[BMAX];
 
-//description:
-//hasht holds 2^12 chains
-//each chain holds a pointer to an elem
-// typedef struct {
-//     char full;
-//     elem *ls;
-// } chain;
+static inline uint mlen(char * __restrict p) {
+    char * __restrict c = p;
+    while (*p++);
+    return p - c - 1;
+}
+static inline int mcmp(char * __restrict dst, char * __restrict src) {
+    while (*dst && *src && (*dst == *src) && (dst++, src++));
+    return *src - *dst;
+}
+static inline void scpy(char * __restrict dst, char * __restrict src) {
+    while ((*dst++ = *src++));
+}
+ush h16(char * __restrict c);
+hasht* maket();
+void ftable(hasht *);
+ush inject(char * __restrict c,char * __restrict reg, hasht *);
+char *fetch(char * __restrict c, hasht *);
+void ptable(hasht *);
 
-typedef elem hasht[SCHUNK];
-
-#define dht ((*ht))
-
-
-hasht *maket();
-
-ushort hash16(char * __restrict p);
-
-// chunk* chunkify(int fd); //must take a file and chunk it into SCHUNK pages
-
-// void run(chunk * __restrict c); //call chunkify
-                      //expand macros
-                      //save to new file
-//this can be private
-// void expand(char * __restrict buff, hasht * __restrict);
-//given a buffer that is 4096, expand within
 
 #endif
