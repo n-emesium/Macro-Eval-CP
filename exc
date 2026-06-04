@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cc -g memreq.c test.c -o test2 && ./test2
+valgrind -s ./test2

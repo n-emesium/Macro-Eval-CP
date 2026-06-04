@@ -1,0 +1,5 @@
+##name ege
+##age 20
+##mood nice
+hey i am name, i am age years old
+mood to meet you!

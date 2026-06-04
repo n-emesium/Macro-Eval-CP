@@ -15,7 +15,8 @@ chunk* carve() {
 
 void* alloc(size_t sz) {
     if (!mem_arena) init();
-    if (mem_arena->fill + sz > SCHUNK) { //chain
+    else if (sz > SCHUNK) return NULL; //refuse
+    else if (mem_arena->fill + sz > SCHUNK) { //chain
         mem_arena->next = carve();
         mem_arena->next->prev = mem_arena;
         mem_arena = mem_arena->next;
