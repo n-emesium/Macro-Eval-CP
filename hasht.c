@@ -1,4 +1,5 @@
 #include "hasht.h"
+#include <stdlib.h>
 #define uint unsigned int
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define lookup 4095
@@ -17,18 +18,19 @@ ushort hash16(char * __restrict p) {
     return ((~((k + until) + coef))) & lookup;
 }
 
-void run(chunk * __restrict c) {
-    chunk *next = NULL;
-    while (c) {
-
-    }
-}
+// void run(chunk * __restrict c) {
+//     chunk *next = NULL;
+//     while (c) {
+//
+//     }
+// }
 
 
 hasht *maket() {
-    hasht *ht = alloc(sizeof(chain) * SCHUNK);
+    hasht *ht = malloc(sizeof(elem) * SCHUNK);
     for (ushort i = 0; i < SCHUNK; i++) {
-        ht[i]->full = 0;
+        elem *htt = &(dht[i]);
+
     }
     return ht;
 }
@@ -46,7 +48,6 @@ static inline void cpy(char * restrict src, char * restrict dest, int st, int ed
 //second pass for evaluation
 
 void expand(char * __restrict buff, hasht * __restrict ht) {
-#define dht (*ht)
     ushort i = 0;
     //schunk = 2^12
     char prev = '\0';
@@ -68,7 +69,6 @@ void expand(char * __restrict buff, hasht * __restrict ht) {
         prev = cur;
         cur = buff[++i];
     }
-#undef dht
 }
 
 // chunk* chunkify(int fd) {

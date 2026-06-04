@@ -14,6 +14,31 @@ void cangetz() {
 }
 
 
+void hash_test() {
+    hasht *ht = maket();
+    int unt = 100;
+    for (int j = 0; j < unt; j++) {
+        int len = (rand() & 15) + 2;
+        char buff[len];
+        for (int i = 0; i < len - 1; i++) {
+            buff[i] = (rand() & 1 ? 'a' : 'A') + (rand() % 26);
+        }
+        buff[len - 1] = '\0';
+        printf("Selected string is: %s\n", buff);
+        ushort h16 = hash16(buff);
+        elem *ch = &dht[h16];
+        while (!(ch->df)) ch = ch->next;
+        ch->key = buff;
+        ch->df = 1;
+        ch->md = 1;
+        char tmp[20];
+        sprintf(tmp, "Element %d", j);
+        ch->value = tmp;
+    }
+
+    free(ht);
+}
+
 int main() {
     unsigned int bucket[SCHUNK] = {0};
     srand(time(NULL));

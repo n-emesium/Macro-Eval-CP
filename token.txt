@@ -1,0 +1,12 @@
+struct/union token {
+    //global
+    tokentype t;
+    char *key;
+    struct/union token *next;
+    //if macro
+    struct/union {
+        char *val;
+        ushort hash;
+    }; //anon construct
+
+}
