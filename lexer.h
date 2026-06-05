@@ -5,7 +5,7 @@
 typedef enum {
     WORD,
     MACRO,
-    WHITESPACE
+    // WHITESPACE
 } tt; //token type
 
 typedef struct token {
@@ -22,5 +22,6 @@ void tfree(token * __restrict t);
 
 void tokprint(token * __restrict t);
 
+token* parser(char * __restrict r);
 
 #endif
