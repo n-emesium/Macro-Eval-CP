@@ -9,7 +9,7 @@ int main() {
     char *buff = "##name ege\n"
                  "##age 20\n"
                  "##mood nice\n"
-                 "##country USA\n"
+                 "##country United States of America\n"
                  "hey i am name, i am age years old\n"
                  "mood to meet you!\n"
                  "I am from country!\n";

@@ -1,14 +1,11 @@
-#include "lexer.h"
 #include <stdlib.h>
+#include "lexer.h"
 #include "hasht.h"
 #include <stdio.h>
+#include "strutil.h"
+#include "token.h"
 #define MAXS 100
-extern int isalpha(int c); //pull this from ctype
-tt wtype(char * __restrict c) {
-    uint tlen = mlen(c);
-    if (tlen >= 2 && c[0] == c[1] && c[0] == '#') return MACRO;
-    else return WORD;
-}
+extern int isspace(int c); //pull this from ctype
 token *test_stream(char * __restrict p) {
     char buff[MAXS];
     token *ret = NULL;
@@ -18,14 +15,9 @@ token *test_stream(char * __restrict p) {
     while (sscanf(p, "%s%n", buff, &bread) == 1) {
         buff[MAXS - 1] = '\0';
         printf("I read the string %s\n", buff);
-        ret = malloc(sizeof(token));
+        ret = tcreate(buff);
         if (!origin) origin = ret;
-        ret->type = wtype(buff);
-        uint tlen = mlen(buff);
         p += bread;
-        ret->content = malloc(sizeof(char) * (tlen + 1));
-        scpy(ret->content, buff);
-        ret->next = NULL;
         if (prev) prev->next = ret;
         prev = ret;
     }
@@ -37,27 +29,47 @@ token* parser(char * __restrict r) {
     register char ll = *r;
     register unsigned char ind = 0;
     char rbuff[MAXS];
-    token *ret = NULL; token *prev = NULL; token *origin = NULL;
+    token *ret = NULL; token *prev = NULL; token *origin = NULL; token *pmac = NULL; token *macor = NULL;
+    char inmc = 0; //in a macro?
     while (ll) {
-        if (isalpha(ll)) {
+        // unsigned char newl = 0;
+        if (!isspace(ll) && ll != '#') {
             build:
             rbuff[ind++] = ll;
         } else if (ll == '#') {
+            //add macro appending logic
             register unsigned char peek = *(r + 1);
-            if (peek && peek == '#') {rbuff[ind++] = '#';goto build;}
+            //remove peek
+            if (peek == '#') {rbuff[ind++] = '#';
+                inmc = 1;
+                goto build;
+            }
+        } else if (inmc && ll == '\n') {
+            rbuff[ind] = '\0';
+            ind = 0;
+            token *app = tcreate(rbuff);
+            pmac->meta = app;
+            pmac = NULL;
+            inmc = 0;
+            if (prev) prev->next = macor;
+            prev = macor;
+            // macor = NULL;
         } else if (ind) {
             append:
                 rbuff[ind] = '\0';
-                ret = malloc(sizeof(token));
+                // ret = malloc(sizeof(token));
+                ret = tcreate(rbuff);
                 if (!origin) origin = ret;
-                ret->type = wtype(rbuff);
-                uint tlen = mlen(rbuff);
-                ret->content = malloc(sizeof(char) * (tlen + 1));
-                // rbuff[tlen] = '\0';
-                scpy(ret->content, rbuff);
-                ret->next = NULL;
+                if (inmc) {
+                    // ret->type = 1; //this is the continuation of a macro chain
+                    // if (!macor) macor = ret;
+                    if (pmac) pmac->meta = ret;
+                    else macor = ret;
+                    pmac = ret;
+                 } else {
                 if (prev) prev->next = ret;
                 prev = ret;
+                }
                 // rbuff[(ind = 0)] = '\0';
                 ind = 0;
         }
@@ -76,25 +88,3 @@ token* stream(FILE * __restrict fp) {
     return origin;
 }
 
-
-void tfree(token * __restrict t) {
-    while (t) {
-        token* tn = t->next;
-        free(t->content);
-        free(t);
-        t = tn;
-    }
-}
-
-const char *debug_str = "\nToken type: %d -- Content: %s -- Next Token Location: %p";
-
-
-void tokprint(token * __restrict t) {
-
-    while (t) {
-        putchar('\n');
-        printf("\nToken types: 0 = WORD, 1 = MACRO");
-        printf(debug_str, t->type, t->content, t->next);
-        t = t->next;
-    }
-}

@@ -16,18 +16,6 @@ typedef struct mem {
 
 typedef mem* hasht[BMAX];
 
-static inline uint mlen(char * __restrict p) {
-    char * __restrict c = p;
-    while (*p++);
-    return p - c - 1;
-}
-static inline int mcmp(char * __restrict dst, char * __restrict src) {
-    while (*dst && *src && (*dst == *src) && (dst++, src++));
-    return *src - *dst;
-}
-static inline void scpy(char * __restrict dst, char * __restrict src) {
-    while ((*dst++ = *src++));
-}
 ush h16(char * __restrict c);
 hasht* maket();
 void ftable(hasht *);

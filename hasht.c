@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "hasht.h"
 #include <stdio.h>
+#include "strutil.h"
 #define min(a, b) ((a) < (b) ? (a) : (b))
 
 // static inline int mlen(char * __restrict c) {
