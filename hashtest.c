@@ -4,10 +4,11 @@
 #include <stdio.h>
 #define BLEN 30
 
+#define SCHUNK 4096
 
+int test_uniq()  {
 
-/*
- * unsigned int bucket[SCHUNK] = {0};
+  unsigned int bucket[SCHUNK] = {0};
     srand(time(NULL));
     int d = 100;
     // cangetz();
@@ -20,9 +21,9 @@
         }
         buff[len - 1] = '\0';
         printf("Selected string is: %s\n", buff);
-        unsigned short h16 = hash16(buff);
-        printf("Corresponding hash is %hu\n", h16);
-        bucket[h16]++;
+        unsigned short hs16 = h16(buff);
+        printf("Corresponding hash is %hu\n", hs16);
+        bucket[hs16]++;
     }
     // return 0;
     uint uniq = 0;
@@ -31,8 +32,11 @@
     }
     printf("%u many unique values.\n", uniq);
     return 0;
- *
- * */
+
+
+
+}
+
 
 
 void populate(char * restrict p) {
@@ -74,5 +78,6 @@ void test() {
 
 int main() {
     test();
+    test_uniq();
     return 0;
 }
