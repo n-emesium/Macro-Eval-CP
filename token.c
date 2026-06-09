@@ -61,6 +61,7 @@ void tokprint(token * __restrict t) {
     printf(debug_str, t->type, t->content, t->next);
     if (t->meta) { //print macro chain
         token *cache = t->meta;
+        printf("\nDEBUG: Meta Token Type: %d", cache->type);
         printf(macro_msg, cache->content, cache->meta);
         tokprint(t->meta);
     }
