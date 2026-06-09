@@ -1,6 +1,6 @@
+#include <stdlib.h>
 #include "hasht.h"
 #include <time.h>
-#include <stdlib.h>
 #include <stdio.h>
 #define BLEN 30
 

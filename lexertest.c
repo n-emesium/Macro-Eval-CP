@@ -12,7 +12,9 @@ int main() {
                  "##country United States of America\n"
                  "hey i am name, i am age years old\n"
                  "mood to meet you!\n"
-                 "I am from country!\n";
+                 "I am from country!\n"
+                 "##something hamburger\n"
+                 ;
     puts("Setting up tokens");
     token *tokens = fp(buff);
     puts("\n\nPrinting tokens");

@@ -29,6 +29,7 @@ token* parser(char * __restrict r) {
     register char ll = *r;
     register unsigned char ind = 0;
     char rbuff[MAXS];
+    char ervat = 0;
     token *ret = NULL; token *prev = NULL; token *origin = NULL; token *pmac = NULL; token *macor = NULL;
     char inmc = 0; //in a macro?
     while (ll) {
@@ -36,14 +37,14 @@ token* parser(char * __restrict r) {
         if (!isspace(ll) && ll != '#') {
             build:
             rbuff[ind++] = ll;
-        } else if (ll == '#') {
+        } else if (ll == '#' && *(r+1) == '#') {
             //add macro appending logic
-            register unsigned char peek = *(r + 1);
             //remove peek
-            if (peek == '#') {rbuff[ind++] = '#';
-                inmc = 1;
-                goto build;
-            }
+            rbuff[ind++] = '#';
+            ll = *++r;
+            inmc = 1;
+            // ll = *++r;
+            goto build;
         } else if (inmc && ll == '\n') {
             rbuff[ind] = '\0';
             ind = 0;
@@ -72,10 +73,11 @@ token* parser(char * __restrict r) {
                 }
                 // rbuff[(ind = 0)] = '\0';
                 ind = 0;
+                if (ervat) break;
         }
         ll = *++r;
     }
-    if (ind) goto append;
+    if (ind) {ervat = 1; goto append;}
     return origin;
 }
 
