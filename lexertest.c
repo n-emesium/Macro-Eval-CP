@@ -1,8 +1,10 @@
 #include "lexer.h"
 #include <stdio.h>
 
-int main() {
-    token *(*fp)(char * __restrict r);
+
+void cstream_test() { //character stream test
+puts("Starting character stream test:");
+token *(*fp)(char * __restrict r);
     //you can use test_stream as well
     fp = parser;
     // Cleaner syntax, explicitly preserves newlines, safe from indentation bugs
@@ -21,5 +23,15 @@ int main() {
     tokprint(tokens);
     puts("\n\nFreeing Tokens");
     tfree(tokens);
-    return 0;
+
+}
+
+
+void fstream_test() {
+
+}
+
+int main() {
+        cstream_test();
+        return 0;
 }
