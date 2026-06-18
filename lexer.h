@@ -31,13 +31,11 @@ token* test_stream(char * __restrict);
  * The behavior should behave depending on whether a full path is given or not.
  *
  * */
-void include(char * __restrict r, char * __restrict fn); //potentially resized
+int include(char * __restrict r, int fn); //potentially resized
 
 token* parser(char * __restrict r);
 
-
-
-char *start(char * __restrict fn); //given a file descriptor fd, it will return a pointer to the start of it
+char* start(char * __restrict fn); //given a file descriptor fd, it will return a pointer to the start of it
 
 
 

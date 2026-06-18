@@ -1,5 +1,16 @@
 can you include this? #1
 hey, what about this #2?
-_not_exist.txt
+##name ege\n
+##age 20\n
+##mood nice\n
+##country United States of America\n
+hey i am name, i am age years old\n
+mood to meet you!\n
+I am from country!\n
+##something hamburger\n
+
+
 hey i am name, i am age years old
+
 mood to meet you!
+

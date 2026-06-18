@@ -82,25 +82,27 @@ static inline int file_paste(int dst, char * __restrict src) {
     return 0;
 }
 
-void include(char * __restrict r, char * __restrict fn) {
+int include(char * __restrict r, int fn) {
     char buffer[SBUFFER];
     char ch, chn;
     int buffi = 0; //buffer index
-    int fd = open(fn, O_WRONLY);
+    // int fd = open(fn, O_WRONLY);
+    int c = 0;
     while ((ch = *r)) {
         chn = *(r+1);
         if ((ch == chn) && ch == '!') { //inclusions must go!
             char *nxt = nextw(r + 2); //add 2 indexes forward
             uint ll = mlen(nxt);
-            int exit_value = file_paste(fd, nxt);
+            int exit_value = file_paste(fn, nxt);
             if (exit_value == 1) { //try local search
                 char temp[ll + 3];
                 sprintf(temp, "./%s", nxt);
-                if (file_paste(fd, temp) == 1) errhand("FATAL: THE FILE YOU HAVE TRIED TO INCLUDE DOES NOT EXIST -- TERMINATED");
+                if (file_paste(fn, temp) == 1) errhand("FATAL: THE FILE YOU HAVE TRIED TO INCLUDE DOES NOT EXIST -- TERMINATED");
             }
             free(nxt);
             // r += ll - 1; //this brings it to the last character, r++ at the end of loop will go 1 more
             r += ll + 1; //ll - 1 + 2 from the 2 !!
+            c++;
             //easiest method:
             //try opening as if full path, if fail, check if in local path,
             //if it still doesn't work, give up and do not include
@@ -109,7 +111,7 @@ void include(char * __restrict r, char * __restrict fn) {
             // buffer[buffi++] = ch;
         } else { //flush buffer
             if (buffi >= SBUFFER) {
-                drelease(buffer, fd, buffi);
+                drelease(buffer, fn, buffi);
                 buffi = 0;
             }
             buffer[buffi++] = ch;
@@ -119,8 +121,9 @@ void include(char * __restrict r, char * __restrict fn) {
         }
         r++;
     }
-    if (buffi) {drelease(buffer, fd, buffi);} //flush if buffer is still full
-    close(fd);
+    if (buffi) {drelease(buffer, fn, buffi);} //flush if buffer is still full
+    close(fn);
+    return c;
 }
 
 
@@ -210,8 +213,14 @@ char *start(char * __restrict fn) {
 
 //TODO: fix this later
 void expand(char * __restrict fn) {
-    char *st = start(fn);
-    // include(&st);
+    char *st = NULL;
+    int fd = open(fn, O_WRONLY);
+    while (include(st, fd)) {
+        free(st);
+        st = start(fn);
+    }
+    free(st);
+        // include(&st);
     token *ts = parser(st);
     //now implement the expansion using the hash table
 }

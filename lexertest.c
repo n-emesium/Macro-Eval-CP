@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "lexer.h"
 #include <stdio.h>
+#include <fcntl.h>
 
 
 void cstream_test() { //character stream test
@@ -30,12 +31,16 @@ token *(*fp)(char * __restrict r);
 
 void fstream_test(char * __restrict fn) {
     char *st = start(fn);
-    include(st, fn);
+    int fd = open(fn, O_WRONLY);
+    include(st, fd);
     free(st);
 }
 
 int main() {
-        // cstream_test();
+        puts("CHARACTER STREAM TEST FOR TOKENIZATION");
+        cstream_test();
+        for (int i = 0; i < 15; i++) putchar('\n');
+        puts("FILE STREAM TEST FOR INCLUSION");
         fstream_test("test.txt");
         return 0;
 }
