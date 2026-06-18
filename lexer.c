@@ -96,6 +96,7 @@ void include(char * __restrict r, char * __restrict fn) {
                 if (file_paste(fd, temp) == 1) errhand("FATAL: THE FILE YOU HAVE TRIED TO INCLUDE DOES NOT EXIST -- TERMINATED");
             }
             free(nxt);
+            r += ll - 1; //this brings it to the last character, r++ at the end of loop will go 1 more
             //easiest method:
             //try opening as if full path, if fail, check if in local path,
             //if it still doesn't work, give up and do not include
