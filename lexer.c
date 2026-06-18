@@ -100,13 +100,21 @@ void include(char * __restrict r, char * __restrict fn) {
             //try opening as if full path, if fail, check if in local path,
             //if it still doesn't work, give up and do not include
 
-        } else if (buffi < SBUFFER) { //append to buffer
-            buffer[buffi++] = ch;
+        // } else if (buffi < SBUFFER) { //append to buffer
+            // buffer[buffi++] = ch;
         } else { //flush buffer
-            drelease(buffer, fd, SBUFFER);
-            buffi = 0;
+            if (buffi >= SBUFFER) {
+                drelease(buffer, fd, buffi);
+                buffi = 0;
+            }
+            buffer[buffi++] = ch;
+            // drelease(buffer, fd, buffi);
+            // buffer[0] = ch;
+            // buffi = 1;
         }
+        r++;
     }
+    if (buffi) {drelease(buffer, fd, buffi);} //flush if buffer is still full
     close(fd);
 }
 
@@ -195,6 +203,7 @@ char *start(char * __restrict fn) {
     return fb;
 }
 
+//TODO: fix this later
 void expand(char * __restrict fn) {
     char *st = start(fn);
     include(&st);
