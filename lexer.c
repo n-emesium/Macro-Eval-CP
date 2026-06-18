@@ -41,7 +41,8 @@ static inline char *nextw(char * restrict src) {
     char ch;
     while ((ch = src[i]) && ch != '\n') i++;
     char *w = malloc(sizeof(char) * (i + 1)); //null termination
-    scpy(w, src);
+    for (int j = 0; j < i; j++) w[j] = src[j];
+    w[i] = '\0';
     return w;
 }
 #define errhand(a) \
@@ -53,14 +54,16 @@ static inline char *nextw(char * restrict src) {
 //
 
 
-#define SBUFFER 512
+//was 512 before, in case immediate revert
+#define SBUFFER 1024
 //data release:
 //this function shall release dirty pages back to the disk, writing to a file
 //stdio FILE * shall not be used so as to not abstract disk read/write
 static inline void drelease(char * __restrict b, int fd, uint bufflen) { //data release
     // int fd = open(fn, O_WRONLY);
-    int i = 0;
-    while (b[i]) {
+    uint i = 0;
+    //while (b[i]) before
+    while (i < bufflen) {
         ssize_t bw = write(fd, b + i, bufflen - i);
         if (bw == -1) errhand("ERROR: FILE WRITE FAILED");
         if (!bw) break; //something wrong
@@ -87,7 +90,7 @@ void include(char * __restrict r, char * __restrict fn) {
     while ((ch = *r)) {
         chn = *(r+1);
         if ((ch == chn) && ch == '!') { //inclusions must go!
-            char *nxt = nextw(r);
+            char *nxt = nextw(r + 2); //add 2 indexes forward
             uint ll = mlen(nxt);
             int exit_value = file_paste(fd, nxt);
             if (exit_value == 1) { //try local search
@@ -96,7 +99,8 @@ void include(char * __restrict r, char * __restrict fn) {
                 if (file_paste(fd, temp) == 1) errhand("FATAL: THE FILE YOU HAVE TRIED TO INCLUDE DOES NOT EXIST -- TERMINATED");
             }
             free(nxt);
-            r += ll - 1; //this brings it to the last character, r++ at the end of loop will go 1 more
+            // r += ll - 1; //this brings it to the last character, r++ at the end of loop will go 1 more
+            r += ll + 1; //ll - 1 + 2 from the 2 !!
             //easiest method:
             //try opening as if full path, if fail, check if in local path,
             //if it still doesn't work, give up and do not include
@@ -181,7 +185,7 @@ char *start(char * __restrict fn) {
     // if (f == -1) errhand("FATAL: FILE OPEN FAILURE -- ABORTED");
     if (f == -1) {
         perror("FATAL: FILE OPEN FAILURE -- ABORTED");
-        close(f);
+        // close(f);
         return NULL;
     }
     struct stat st; //os will answer, i am on linux
@@ -207,7 +211,7 @@ char *start(char * __restrict fn) {
 //TODO: fix this later
 void expand(char * __restrict fn) {
     char *st = start(fn);
-    include(&st);
+    // include(&st);
     token *ts = parser(st);
     //now implement the expansion using the hash table
 }

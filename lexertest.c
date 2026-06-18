@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "lexer.h"
 #include <stdio.h>
 
@@ -27,11 +28,14 @@ token *(*fp)(char * __restrict r);
 }
 
 
-void fstream_test() {
-
+void fstream_test(char * __restrict fn) {
+    char *st = start(fn);
+    include(st, fn);
+    free(st);
 }
 
 int main() {
-        cstream_test();
+        // cstream_test();
+        fstream_test("test.txt");
         return 0;
 }
