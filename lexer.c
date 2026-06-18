@@ -1,4 +1,7 @@
 #include <stdlib.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include "lexer.h"
 #include "hasht.h"
 #include <stdio.h>
@@ -22,6 +25,25 @@ token *test_stream(char * __restrict p) {
         prev = ret;
     }
     return origin;
+}
+
+//helper function to painlessly get next word
+char *nextw(char * restrict src) {
+    int c = 50;
+}
+
+
+void include(char ** __restrict r) {
+    // char *resized = NULL;
+    char ch, chn;
+    char *read = *r;
+    while (*read) {
+        ch = *read, chn = *(read + 1);
+        if (ch && chn && (ch == chn) && (ch == '!')) { //the only condition for inclusion
+
+        }
+    }
+    // return resized;
 }
 
 
@@ -81,12 +103,48 @@ token* parser(char * __restrict r) {
     return origin;
 }
 
+#define errhand(a) \
+    do {\
+    perror(a);exit(EXIT_FAILURE);   \
+    } while(0)
 
-//INCOMPLETE
-token* stream(FILE * __restrict fp) {
-    token *t = malloc(sizeof(token));
-    token *origin = t;
-    //construct
-    return origin;
+
+char *start(char * __restrict fn) {
+    int f = open(fn, O_RDONLY);
+    if (f == -1) errhand("FATAL: FILE OPEN FAILURE -- ABORTED");
+    struct stat st; //os will answer, i am on linux
+    if (fstat(f, &st) == -1) errhand("FATAL: FILE STATUS NOT RECEIVED -- ABORTED");
+    size_t fs = st.st_size;
+    char *fb = malloc(sizeof(char) * (fs + 1));
+    if (!fb) errhand("FATAL: FILE BUFFER COULD NOT BE ALLOCATED -- ABORTED");
+    size_t br = 0;
+    while (br < fs) {
+        ssize_t res = read(f, fb + br, fs - br);
+        if (res == -1) {
+            free(fb);
+            errhand("ERROR: FILE READ FAILED");
+        }
+        if (!res) break; //EOF was found earlier
+        br += res;
+    }
+    fb[br] = '\0';
+    close(f);
+    return fb;
 }
+
+void expand(char * __restrict fn) {
+    char *st = start(fn);
+    include(&st);
+    token *ts = parser(st);
+    //now implement the expansion using the hash table
+}
+
+
+//INCOMPLETE, NEVER USE
+// token* stream(FILE * __restrict fp) {
+//     token *t = malloc(sizeof(token));
+//     token *origin = t;
+//     //construct
+//     return origin;
+// }
 
