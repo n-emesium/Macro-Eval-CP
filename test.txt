@@ -1,5 +1,8 @@
+!!itest1.txt
 ##name ege
 ##age 20
+!!itest2.txt
 ##mood nice
+!!this_file_does_not_exist.txt
 hey i am name, i am age years old
 mood to meet you!

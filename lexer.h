@@ -31,7 +31,7 @@ token* test_stream(char * __restrict);
  * The behavior should behave depending on whether a full path is given or not.
  *
  * */
-void include(char ** __restrict r); //potentially resized
+void include(char * __restrict r, char * __restrict fn); //potentially resized
 
 token* parser(char * __restrict r);
 
